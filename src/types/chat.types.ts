@@ -1,5 +1,5 @@
 export interface ServerToClientEvents {
-    messageReceived: (message: Message) => void;
+    messageReceived: (message: MessageRequest) => void;
     userJoined: (userId: string) => void;
     userLeft: (userId: string) => void;
     typing: (data: { userId: string; isTyping: boolean }) => void;

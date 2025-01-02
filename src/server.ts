@@ -71,12 +71,12 @@ export class ChatServer {
                     }
                 );
 
-                const finalMessage: Message = {
+                const finalMessage: MessageRequest = {
                     from: message.from,
                     to: message.to,
                     content: message.content,
                     timestamp: message.timestamp,
-                    read: false
+                    conversationId: message.conversationId
                 };
 
                 this.io.to(message.conversationId).emit('messageReceived', finalMessage);
@@ -123,13 +123,13 @@ export class ChatServer {
             const ownerId = booking.property.owner.id;
 
             // For each connected user that should be notified
-            for (const userId1 of [guestId, ownerId]) {
-                const userSockets = this.connectedUsers.get(userId1);
+            for (const userId of [guestId, ownerId]) {
+                const userSockets = this.connectedUsers.get(userId);
                 if (userSockets) {
                     try {
                         // Fetch fresh bookings for this user
                         const response = await axios.get<Booking[]>(
-                            `${this.API_URL}/bookings/findByUserGuestOrHost/${userId1}`,
+                            `${this.API_URL}/bookings/findByUserGuestOrHost/${userId}`,
                             {
                                 headers: { Authorization: `Bearer ${token}` }
                             }
@@ -148,7 +148,7 @@ export class ChatServer {
                             }
                         });
                     } catch (error) {
-                        console.error(`Failed to update bookings for user ${userId1}:`, error);
+                        console.error(`Failed to update bookings for user ${userId}:`, error);
                     }
                 }
             }
@@ -200,3 +200,17 @@ const chatServer = new ChatServer(httpServer);
 
 const port = process.env.PORT || '3001';
 chatServer.start(Number.parseInt(port));
+
+
+// Handle process termination signals
+process.on('SIGINT', () => {
+    console.log('Received SIGINT. Shutting down server...');
+    chatServer.stop();
+    process.exit(0);
+});
+
+process.on('SIGTERM', () => {
+    console.log('Received SIGTERM. Shutting down server...');
+    chatServer.stop();
+    process.exit(0);
+});
