@@ -1,6 +1,6 @@
 import {Server, Socket} from 'socket.io';
 import {createServer, Server as HttpServer} from 'http';
-import {Booking, ClientToServerEvents, Message, MessageRequest, ServerToClientEvents} from './types/chat.types';
+import {Booking, ClientToServerEvents, MessageRequest, ServerToClientEvents} from './types/chat.types';
 import axios from 'axios';
 
 export class ChatServer {
