@@ -18,7 +18,6 @@ export class ChatServer {
         });
 
         this.io.on('connection', this.handleConnection);
-
     }
 
     private handleConnection = async (socket: Socket) => {
@@ -39,7 +38,7 @@ export class ChatServer {
             const response = await axios.get<Booking[]>(
                 `${this.API_URL}/bookings/findByUserGuestOrHost/${userId}`,
                 {
-                    headers: { Authorization: `Bearer ${token}` }
+                    headers: {Authorization: `Bearer ${token}`}
                 }
             );
 
@@ -61,13 +60,13 @@ export class ChatServer {
             return;
         }
 
-        socket.on('sendMessage', async (message: MessageRequest, callback ) => {
+        socket.on('sendMessage', async (message: MessageRequest, callback) => {
             try {
                 await axios.post(
                     `${this.API_URL}/users/chat/message`,
                     message,
                     {
-                        headers: { Authorization: `Bearer ${token}` }
+                        headers: {Authorization: `Bearer ${token}`}
                     }
                 );
 
@@ -81,7 +80,7 @@ export class ChatServer {
 
                 this.io.to(message.conversationId).emit('messageReceived', finalMessage);
 
-                callback({ success: true });
+                callback({success: true});
             } catch (error: any) {
                 if (error.response?.status === 401) {
                     socket.emit('tokenExpired');
@@ -102,7 +101,7 @@ export class ChatServer {
                     `${this.API_URL}/bookings/conversation/${conversationId}/read`,
                     {},
                     {
-                        headers: { Authorization: `Bearer ${token}` }
+                        headers: {Authorization: `Bearer ${token}`}
                     }
                 );
 
@@ -131,7 +130,7 @@ export class ChatServer {
                         const response = await axios.get<Booking[]>(
                             `${this.API_URL}/bookings/findByUserGuestOrHost/${userId}`,
                             {
-                                headers: { Authorization: `Bearer ${token}` }
+                                headers: {Authorization: `Bearer ${token}`}
                             }
                         );
 
